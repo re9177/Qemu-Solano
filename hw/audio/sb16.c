@@ -1590,6 +1590,17 @@ static int SB_read_DMA (void *opaque, int nchan, int dma_pos, int dma_len)
 
     to_copy = MIN(copy, till);
 
+    if (s->cmd == 0x75) {
+        uint8_t ref_byte;
+    
+        k->read_memory(isa_dma, nchan, &ref_byte, dma_pos, 1);
+        s->adpcm_valpred = (int16_t)((ref_byte - 128) << 8);
+        s->adpcm_index = 0;
+
+        dma_pos = (dma_pos + 1) % dma_len;
+        s->cmd = 0x74;
+    }
+
     if (s->cmd == 0x74) {
         to_copy = MIN(to_copy, dma_len - dma_pos);
         if (to_copy > (int)sizeof(tmpbuf) / 4) {
@@ -1609,17 +1620,6 @@ static int SB_read_DMA (void *opaque, int nchan, int dma_pos, int dma_len)
         written = bytes_out / 4;
     } else {
         written = write_audio(s, nchan, dma_pos, dma_len, to_copy);
-    }
-
-    if (s->cmd == 0x75) {
-        uint8_t ref_byte;
-    
-        k->read_memory(isa_dma, nchan, &ref_byte, dma_pos, 1);
-        s->adpcm_valpred = (int16_t)((ref_byte - 128) << 8);
-        s->adpcm_index = 0;
-
-        dma_pos = (dma_pos + 1) % dma_len;
-        s->cmd = 0x74; 
     }
 
     dma_pos = (dma_pos + written) % dma_len;
