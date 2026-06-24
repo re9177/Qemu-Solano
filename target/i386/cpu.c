@@ -2397,6 +2397,52 @@ static const AVX10VersionDefinition builtin_avx10_defs[] = {
     },
 };
 
+static const CPUCaches netburst_cache_info = {
+    .l1d_cache = &(CPUCacheInfo) {
+        .type = DATA_CACHE,
+        .level = 1,
+        .size = 16 * KiB,
+        .line_size = 64,
+        .associativity = 8,
+        .lines_per_tag = 1,
+        .self_init = 1,
+        .partitions = 1,
+        .sets = 32,
+    },
+    .l1i_cache = &(CPUCacheInfo) {
+        .type = INSTRUCTION_CACHE,
+        .level = 1,
+        .size = 12 * KiB,
+        .line_size = 64,
+        .associativity = 8,
+        .lines_per_tag = 1,
+        .self_init = 1,
+        .partitions = 1,
+        .sets = 24,
+    },
+    .l2_cache = &(CPUCacheInfo) {
+        .type = UNIFIED_CACHE,
+        .level = 2,
+        .size = 1 * MiB,
+        .line_size = 64,
+        .associativity = 8,
+        .lines_per_tag = 1,
+        .partitions = 1,
+        .sets = 2048,
+    },
+    .l3_cache = &(CPUCacheInfo) { /* Used only on Pentium 4 Extreme Edition */
+        .type = UNIFIED_CACHE,
+        .level = 1,
+        .size = 2 * MiB,
+        .line_size = 64,
+        .associativity = 8,
+        .lines_per_tag = 1,
+        .partitions = 1,
+        .sets = 4096,
+    },
+};
+
+
 static const CPUCaches epyc_cache_info = {
     .l1d_cache = &(CPUCacheInfo) {
         .type = DATA_CACHE,
@@ -3813,6 +3859,33 @@ static const X86CPUDefinition builtin_x86_defs[] = {
         .xlevel = 0x80000004,
         .model_id = "Intel(R) Pentium(R) 4 CPU 1.80GHz",
         .cache_info = &legacy_intel_cpuid2_cache_info,
+    },
+    {
+        .name = "northwood",
+        .level = 2,
+        .vendor = CPUID_VENDOR_INTEL,
+        .family = 15,
+        .model = 2,
+        .stepping = 4,
+        .features[FEAT_1_EDX] =
+            PENTIUM3_FEATURES | CPUID_CLFLUSH | CPUID_DTS | CPUID_ACPI | CPUID_SSE2 | CPUID_SS | CPUID_HT | CPUID_TM,
+        .xlevel = 0x80000004,
+        .model_id = "Intel(R) Pentium(R) 4 CPU 2.20GHz",
+        .cache_info = &legacy_intel_cpuid2_cache_info,
+    },
+    {
+        .name = "netburst", /* Intel Pentium 4 Prescott */
+        .level = 5,
+        .vendor = CPUID_VENDOR_INTEL,
+        .family = 15,
+        .model = 4,
+        .stepping = 1,
+        .features[FEAT_1_ECX] = CPUID_EXT_SSE3,
+        .features[FEAT_1_EDX] =
+            PENTIUM3_FEATURES | CPUID_CLFLUSH | CPUID_DTS | CPUID_ACPI | CPUID_SSE2 | CPUID_SS | CPUID_HT | CPUID_TM,
+        .xlevel = 0x80000008,
+        .cache_info = &netburst_cache_info,
+        .model_id = "Intel(R) Pentium(R) 4 CPU 3.00GHz",
     },
     {
         .name = "athlon",
