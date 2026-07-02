@@ -229,10 +229,15 @@ static uint8_t cpuid2_cache_descriptor(CPUCacheInfo *cache, bool *unmacthed)
 {
     int i;
 
+    if (!cache || cache->size == 0) {
+        return CACHE_DESCRIPTOR_UNAVAILABLE;
+    }
+
     assert(cache->size > 0);
     assert(cache->level > 0);
     assert(cache->line_size > 0);
     assert(cache->associativity > 0);
+    
     for (i = 0; i < ARRAY_SIZE(cpuid2_cache_descriptors); i++) {
         struct CPUID2CacheDescriptorInfo *d = &cpuid2_cache_descriptors[i];
         if (d->level == cache->level && d->type == cache->type &&
@@ -784,6 +789,26 @@ static const CPUCaches legacy_intel_cache_info = {
         .complex_indexing = true,
         .share_level = CPU_TOPOLOGY_LEVEL_DIE,
     },
+};
+
+/* Willamette Cache Topology */
+static const CPUCaches willamette_cache_info = {
+    .l1i_cache = &(CPUCacheInfo) {
+        .type = INSTRUCTION_CACHE, .level = 1, .size = 12 * KiB,
+        .line_size = 64, .associativity = 8, .partitions = 1,
+        .sets = 24, .lines_per_tag = 1,
+    },
+    .l1d_cache = &(CPUCacheInfo) {
+        .type = DATA_CACHE, .level = 1, .size = 8 * KiB,
+        .line_size = 64, .associativity = 4, .partitions = 1,
+        .sets = 32, .lines_per_tag = 1,
+    },
+    .l2_cache = &(CPUCacheInfo) {
+        .type = UNIFIED_CACHE, .level = 2, .size = 256 * KiB,
+        .line_size = 64, .associativity = 8, .partitions = 1,
+        .sets = 512, .lines_per_tag = 1,
+    },
+    .l3_cache = NULL,
 };
 
 /* TLB definitions: */
@@ -3847,18 +3872,24 @@ static const X86CPUDefinition builtin_x86_defs[] = {
         .model_id = "Intel(R) Pentium(R) III CPU 1333MHz",
         .cache_info = &legacy_intel_cpuid2_cache_info,
     },
-    {
+{
         .name = "willamette",
         .level = 2,
         .vendor = CPUID_VENDOR_INTEL,
         .family = 15,
         .model = 1,
-        .stepping = 2,
+        .stepping = 3,
         .features[FEAT_1_EDX] =
-            PENTIUM3_FEATURES | CPUID_CLFLUSH | CPUID_DTS | CPUID_ACPI | CPUID_SSE2 | CPUID_SS | CPUID_HT | CPUID_TM,
-        .xlevel = 0x80000004,
-        .model_id = "Intel(R) Pentium(R) 4 CPU 1.80GHz",
-        .cache_info = &legacy_intel_cpuid2_cache_info,
+            CPUID_FP87 | CPUID_VME | CPUID_DE | CPUID_PSE | CPUID_TSC |
+            CPUID_MSR | CPUID_PAE | CPUID_MCE | CPUID_CX8 | CPUID_APIC |
+            CPUID_SEP | CPUID_MTRR | CPUID_PGE | CPUID_MCA | CPUID_CMOV |
+            CPUID_PAT | CPUID_PSE36 | CPUID_CLFLUSH | CPUID_ACPI |
+            CPUID_MMX | CPUID_FXSR | CPUID_SSE | CPUID_SSE2 | CPUID_SS,
+        .features[FEAT_1_ECX] =
+            CPUID_EXT_MONITOR, 
+        .xlevel = 0x80000008,
+        .model_id = "Intel(R) Pentium(R) 4 CPU 2.60GHz",
+        .cache_info = &willamette_cache_info,
     },
     {
         .name = "northwood",
