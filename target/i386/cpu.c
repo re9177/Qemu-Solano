@@ -3872,7 +3872,7 @@ static const X86CPUDefinition builtin_x86_defs[] = {
         .model_id = "Intel(R) Pentium(R) III CPU 1333MHz",
         .cache_info = &legacy_intel_cpuid2_cache_info,
     },
-{
+    {
         .name = "willamette",
         .level = 2,
         .vendor = CPUID_VENDOR_INTEL,
@@ -3899,7 +3899,13 @@ static const X86CPUDefinition builtin_x86_defs[] = {
         .model = 2,
         .stepping = 4,
         .features[FEAT_1_EDX] =
-            PENTIUM3_FEATURES | CPUID_CLFLUSH | CPUID_DTS | CPUID_ACPI | CPUID_SSE2 | CPUID_SS | CPUID_HT | CPUID_TM,
+            CPUID_FP87 | CPUID_VME | CPUID_DE | CPUID_PSE | CPUID_TSC |
+            CPUID_MSR | CPUID_PAE | CPUID_MCE | CPUID_CX8 | CPUID_APIC |
+            CPUID_SEP | CPUID_MTRR | CPUID_PGE | CPUID_MCA | CPUID_CMOV |
+            CPUID_PAT | CPUID_PSE36 | CPUID_CLFLUSH | CPUID_ACPI |
+            CPUID_MMX | CPUID_FXSR | CPUID_SSE | CPUID_SSE2 | CPUID_SS,
+        .features[FEAT_1_ECX] =
+            CPUID_EXT_MONITOR,
         .xlevel = 0x80000004,
         .model_id = "Intel(R) Pentium(R) 4 CPU 2.20GHz",
         .cache_info = &legacy_intel_cpuid2_cache_info,
@@ -3911,12 +3917,17 @@ static const X86CPUDefinition builtin_x86_defs[] = {
         .family = 15,
         .model = 4,
         .stepping = 1,
-        .features[FEAT_1_ECX] = CPUID_EXT_SSE3,
         .features[FEAT_1_EDX] =
-            PENTIUM3_FEATURES | CPUID_CLFLUSH | CPUID_DTS | CPUID_ACPI | CPUID_SSE2 | CPUID_SS | CPUID_HT | CPUID_TM,
+            CPUID_FP87 | CPUID_VME | CPUID_DE | CPUID_PSE | CPUID_TSC |
+            CPUID_MSR | CPUID_PAE | CPUID_MCE | CPUID_CX8 | CPUID_APIC |
+            CPUID_SEP | CPUID_MTRR | CPUID_PGE | CPUID_MCA | CPUID_CMOV |
+            CPUID_PAT | CPUID_PSE36 | CPUID_CLFLUSH | CPUID_ACPI |
+            CPUID_MMX | CPUID_FXSR | CPUID_SSE | CPUID_SSE2 | CPUID_SS,
+        .features[FEAT_1_ECX] = 
+            CPUID_EXT_SSE3, CPUID_EXT_MONITOR,
         .xlevel = 0x80000008,
-        .cache_info = &netburst_cache_info,
         .model_id = "Intel(R) Pentium(R) 4 CPU 3.00GHz",
+        .cache_info = &netburst_cache_info,
     },
     {
         .name = "athlon",
