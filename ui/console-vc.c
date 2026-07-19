@@ -926,8 +926,8 @@ static void vc_putchar(VCChardev *vc, int ch)
                     break;
                 case 2:
                     /* clear entire screen */
-                    for (y = 0; y < vt->height; y++) {
-                        for (x = 0; x < vt->width; x++) {
+                    for (y = 0; y < s->height; y++) {
+                        for (x = 0; x < s->width; x++) {
                             vc_clear_xy(vc, x, y);
                         }
                     }
