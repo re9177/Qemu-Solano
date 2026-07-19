@@ -81,6 +81,8 @@ typedef struct QemuTextConsole {
     QemuConsole parent;
 
     QemuVT100 vt;
+    int width;
+    int height;
     Chardev *chr;
     /* fifo for key pressed */
     Fifo8 out_fifo;
