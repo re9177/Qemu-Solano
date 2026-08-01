@@ -45,6 +45,7 @@ util_ss.add(files('id.c'))
 util_ss.add(files('qemu-config.c', 'notify.c'))
 util_ss.add(files('qemu-option.c', 'qemu-progress.c'))
 util_ss.add(files('keyval.c'))
+util_ss.add(files('crc32.c'))
 util_ss.add(files('crc32c.c'))
 util_ss.add(files('uuid.c'))
 util_ss.add(files('getauxval.c'))
@@ -65,10 +66,6 @@ util_ss.add(files('int128.c'))
 util_ss.add(files('memalign.c'))
 util_ss.add(files('interval-tree.c'))
 util_ss.add(files('lockcnt.c'))
-
-if have_user
-  util_ss.add(files('selfmap.c'))
-endif
 
 if have_system
   util_ss.add(files('crc-ccitt.c'))
