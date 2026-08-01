@@ -790,26 +790,6 @@ static const CPUCaches legacy_intel_cache_info = {
     },
 };
 
-/* Willamette Cache Topology */
-static const CPUCaches willamette_cache_info = {
-    .l1i_cache = &(CPUCacheInfo) {
-        .type = INSTRUCTION_CACHE, .level = 1, .size = 12 * KiB,
-        .line_size = 64, .associativity = 8, .partitions = 1,
-        .sets = 24, .lines_per_tag = 1,
-    },
-    .l1d_cache = &(CPUCacheInfo) {
-        .type = DATA_CACHE, .level = 1, .size = 8 * KiB,
-        .line_size = 64, .associativity = 4, .partitions = 1,
-        .sets = 32, .lines_per_tag = 1,
-    },
-    .l2_cache = &(CPUCacheInfo) {
-        .type = UNIFIED_CACHE, .level = 2, .size = 256 * KiB,
-        .line_size = 64, .associativity = 8, .partitions = 1,
-        .sets = 512, .lines_per_tag = 1,
-    },
-    .l3_cache = NULL,
-};
-
 /* TLB definitions: */
 
 #define L1_DTLB_2M_ASSOC       1
@@ -3888,7 +3868,7 @@ static const X86CPUDefinition builtin_x86_defs[] = {
             CPUID_EXT_MONITOR, 
         .xlevel = 0x80000008,
         .model_id = "Intel(R) Pentium(R) 4 CPU 2.60GHz",
-        .cache_info = &willamette_cache_info,
+        .cache_info = &legacy_intel_cpuid2_cache_info,
     },
     {
         .name = "northwood",
